@@ -27,10 +27,6 @@ namespace kj {
 namespace _ {  // private
 namespace {
 
-TEST(Exception, TrimSourceFilename) {
-  EXPECT_EQ(trimSourceFilename(__FILE__), "kj/exception-test.c++");
-}
-
 TEST(Exception, RunCatchingExceptions) {
   bool recovered = false;
   Maybe<Exception> e = kj::runCatchingExceptions([&]() {
