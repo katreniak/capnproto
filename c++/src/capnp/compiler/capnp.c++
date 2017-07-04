@@ -225,6 +225,8 @@ public:
            .addOption({"short"}, KJ_BIND_METHOD(*this, printShort),
                       "Print in short (non-pretty) text format.  The message will be printed on "
                       "one line, without using whitespace to improve readability.")
+           .addOption({"json"}, KJ_BIND_METHOD(*this, setJson),
+                      "Print in json format.")
            .expectArg("<schema-file>", KJ_BIND_METHOD(*this, addSource))
            .expectArg("<name>", KJ_BIND_METHOD(*this, evalConst));
     return builder.build();
@@ -1447,6 +1449,16 @@ public:
       writeFlat(value.as<DynamicStruct>(), output);
       output.flush();
       context.exit();
+    } else if (json) {
+      JsonCodec codec;
+      codec.setPrettyPrint(pretty);
+      if (pretty && value.getType() == DynamicValue::STRUCT) {
+        context.exitInfo(codec.encode(value.as<DynamicStruct>(), value.as<DynamicStruct>().getSchema()));
+      } else if (pretty && value.getType() == DynamicValue::LIST) {
+        context.exitInfo(codec.encode(value.as<DynamicList>(), value.as<DynamicList>().getSchema()));
+      } else {
+        return "Not a struct or list; json is only implemented on structs and lists now.";
+      }
     } else {
       if (pretty && value.getType() == DynamicValue::STRUCT) {
         context.exitInfo(prettyPrint(value.as<DynamicStruct>()).flatten());
