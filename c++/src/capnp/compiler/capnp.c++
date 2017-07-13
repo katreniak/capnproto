@@ -1452,9 +1452,9 @@ public:
     } else if (json) {
       JsonCodec codec;
       codec.setPrettyPrint(pretty);
-      if (pretty && value.getType() == DynamicValue::STRUCT) {
+      if (value.getType() == DynamicValue::STRUCT) {
         context.exitInfo(codec.encode(value.as<DynamicStruct>(), value.as<DynamicStruct>().getSchema()));
-      } else if (pretty && value.getType() == DynamicValue::LIST) {
+      } else if (value.getType() == DynamicValue::LIST) {
         context.exitInfo(codec.encode(value.as<DynamicList>(), value.as<DynamicList>().getSchema()));
       } else {
         return "Not a struct or list; json is only implemented on structs and lists now.";
